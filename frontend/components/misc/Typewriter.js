@@ -17,7 +17,6 @@ const Typewriter = ({ text, delay, classes }) => {
     }
   }, [currentIndex, delay, text]);
 
-  // Typing logic goes here
 
   return <div className={`${classes}`}>{currentText}</div>;
 };
