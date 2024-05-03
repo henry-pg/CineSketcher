@@ -2,37 +2,75 @@
 import React, { useEffect, useState } from 'react';
 import Button from '/components/ui/Button';
 
-const  ScenarioPopup = ({ show, onClose, scenarioArray, ScenarioIndex, imageArray }) => {
+const ScenarioPopup = ({ show, onClose, scenarioArray, setScenarioArray, scenarioIndex, handleGenerateImage, imageUrlArray, setImageUrlArray, characterArray }) => {
+
+
     const [showPopUp, setShowPopup] = useState(show);
     const [animate, setAnimate] = useState(false);
+    const [scenarioDescription, setScenarioDescription] = useState('');
 
     useEffect(() => {
         let animationTimeout;
         if (show) {
-        setShowPopup(true);
-        animationTimeout = setTimeout(() => setAnimate(true), 10);
+            setShowPopup(true);
+            setScenarioDescription(scenarioArray[scenarioIndex].description);
+            animationTimeout = setTimeout(() => setAnimate(true), 10);
         } else {
-        setAnimate(false);
-        animationTimeout = setTimeout(() => {
-            setShowPopup(false);
-        }, 300);
+            setAnimate(false);
+            animationTimeout = setTimeout(() => {
+                setShowPopup(false);
+            }, 300);
         }
     
         return () => {
-        clearTimeout(animationTimeout);
+            clearTimeout(animationTimeout);
         };
-    }, [show]);
-    
+    }, [show, scenarioArray, scenarioIndex]);
 
-    const handleClose = (event) => {
-        if (event.target.id === 'popupBackground') {
-        setAnimate(false);
+
+    const handleScenarioChange = (event) => {
+        setScenarioDescription(event.target.value);
+    };
+
+    const handleSubmit = (event) => {
+        event.preventDefault();  
+        const updatedScenario = { 
+            ...scenarioArray[scenarioIndex],
+            
+            description: scenarioDescription,
+        };
+
+        
+
+        const updatedArray = [...scenarioArray];
+        updatedArray[scenarioIndex] = updatedScenario;
+
+
+        console.log(imageUrlArray)
+        const updatedImageArray = [...imageUrlArray];
+        updatedImageArray[scenarioIndex] = "loading";
+        setImageUrlArray(updatedImageArray);
+        setScenarioArray(updatedArray);
+        handleGenerateImage(scenarioDescription, characterArray);
         setTimeout(() => {
             setShowPopup(false);
             if (onClose) {
-            onClose();
+                onClose();
             }
         }, 300);
+        
+    };
+
+    const handleClose = (event) => {
+        if (event.target.id === 'popupBackground') {
+            setAnimate(false);
+            setTimeout(() => {
+                setShowPopup(false);
+                if (onClose) {
+                    onClose();
+                }
+
+            }, 300);
         }
     };
 
@@ -49,32 +87,30 @@ const  ScenarioPopup = ({ show, onClose, scenarioArray, ScenarioIndex, imageArra
     return (
         <>
         {showPopUp &&
-        <div id="popupBackground" onClick={handleClose} style={backgroundStyle} className="fixed inset-0 bg-dark bg-opacity-75 flex justify-center items-center backdrop-filter backdrop-blur-sm">
-                <div style={modalStyle} className="bg-white p-4 w-[700px] rounded shadow-xl" onClick={e => e.stopPropagation()}>
+            <div id="popupBackground" onClick={handleClose} style={backgroundStyle} className="fixed inset-0 bg-dark bg-opacity-75 flex justify-center items-center backdrop-filter backdrop-blur-sm">
+                <div style={modalStyle} className="bg-white p-4 w-[500px] rounded shadow-xl" onClick={e => e.stopPropagation()}>
                     <h2 className="text-dark text-lg font-bold mb-4">Scenario</h2>
                     <div className="space-y-4">
                         <div>
-                        <label className="text-gray block mb-2">Character Name</label>
-                        <input
-                            type="text"
-                            className="w-full px-4 py-2 rounded border border-gray focus:outline-none focus:border-dark text-gray"
-                        />
+                            
                         </div>
                         <div>
-                        <label htmlFor="password" className="text-gray block mb-2">Character Description</label>
-                        <textarea
-                            type="text"
-                            className="w-full px-4 py-2 rounded border border-gray focus:outline-none focus:border-dark text-gray"
-                        />
+                            <label className="text-gray block mb-2">Scenario Description</label>
+                            <textarea
+                                value={scenarioDescription}
+                                onChange={handleScenarioChange}
+                                className="w-full px-4 py-2 rounded border border-gray focus:outline-none focus:border-dark text-gray"
+                            />
                         </div>
                         
-                        <Button text="generate" classes="w-full text-base" />
+                        <Button text="Generate" classes="w-full text-base" onClick={handleSubmit}/>
                     </div>
                 </div>
-        </div>
+            </div>
         }
         </>
     );
+    
 };
 
 export default ScenarioPopup;
