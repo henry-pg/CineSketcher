@@ -1,7 +1,7 @@
 import requests
 
 API_URL = "https://api-inference.huggingface.co/models/blink7630/storyboard-sketch"
-headers = {"Authorization": "Bearer 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"}
+headers = {"Authorization": "Bearer "}
 import io
 from PIL import Image
 
