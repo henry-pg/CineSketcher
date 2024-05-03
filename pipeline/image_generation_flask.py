@@ -8,7 +8,7 @@ app = Flask(__name__)
 CORS(app)
 
 API_URL = "https://api-inference.huggingface.co/models/blink7630/storyboard-sketch"
-headers = {"Authorization": "Bearer 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"}
+headers = {"Authorization": "Bearer "}
 
 # character_descriptions = [{"index":0, "name":"alex", "description":"alex is a fat white guy"}, {"index":1, "name":"brad", "description":"brad is a skinny and tall indian man"}]
 # scenario = "alex and brad are flying a plane"
